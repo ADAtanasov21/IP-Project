@@ -15,7 +15,6 @@ def catalog():
 
     products = catalog_service.get_products()
 
-    # Филтриране
     if search:
         products = [p for p in products if search.lower() in p['name'].lower() or search.lower() in p['color'].lower()]
 

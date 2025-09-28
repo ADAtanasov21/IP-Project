@@ -7,7 +7,6 @@ from controllers.admin_controller import admin_bp
 app = Flask(__name__)
 app.secret_key = 'your-secret-key-here'
 
-# Регистриране на blueprints
 app.register_blueprint(auth_bp, url_prefix='/auth')
 app.register_blueprint(catalog_bp)
 app.register_blueprint(cart_bp, url_prefix='/cart')

@@ -93,13 +93,13 @@ class CatalogService:
             },
             {
                 'id': 19, 'name': 'Off-White Jordan 1', 'description': 'Колаборация с Virgil Abloh',
-                'color': 'Оранжев', 'sizes': ['40', '41', '42', '43', '44'], 'price': 750.00,
-                'quantity': 3, 'image': 'https://image-cdn.hypb.st/https%3A%2F%2Fhypebeast.com%2Fimage%2F2022%2F02%2Fzach-lavine-commissions-custom-off-white-x-air-jordan-1-low-starfish-000.jpg?w=960&cbr=1&q=90&fit=max'
+                'color': 'Оранжев', 'sizes': ['Няма налични бройки'], 'price': 750.00,
+                'quantity': 0, 'image': 'https://image-cdn.hypb.st/https%3A%2F%2Fhypebeast.com%2Fimage%2F2022%2F02%2Fzach-lavine-commissions-custom-off-white-x-air-jordan-1-low-starfish-000.jpg?w=960&cbr=1&q=90&fit=max'
             },
             {
                 'id': 20, 'name': 'Allbirds Tree Runners', 'description': 'Екологични обувки от мерино',
-                'color': 'Сив', 'sizes': ['38', '39', '40', '41', '42'], 'price': 150.00,
-                'quantity': 12, 'image': 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSaIq3mhZQkgBm2SXcj8HHUaYq5wOs8gVufzw&s'
+                'color': 'Сив', 'sizes': ['Няма налични бройки'], 'price': 150.00,
+                'quantity': 0, 'image': 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSaIq3mhZQkgBm2SXcj8HHUaYq5wOs8gVufzw&s'
             }
         ]
         self.next_id = 21

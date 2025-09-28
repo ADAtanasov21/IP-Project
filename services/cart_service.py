@@ -3,17 +3,18 @@ from services.catalog_service import CatalogService
 
 class CartService:
     def __init__(self):
-        self.carts = {}  # user_id -> list of cart items
+        self.carts = {}
         self.catalog_service = CatalogService()
 
     def add_to_cart(self, user_id, product_id, size):
         if user_id not in self.carts:
             self.carts[user_id] = []
 
-        # Проверяваме дали вече е добавен същия продукт със същия размер
         for item in self.carts[user_id]:
             if item['product_id'] == product_id and item['size'] == size:
-                return  # Не добавяме повторно
+
+                item['quantity'] += 1
+                return
 
         product = self.catalog_service.get_product_by_id(product_id)
         if product and product['quantity'] > 0:
@@ -22,7 +23,8 @@ class CartService:
                 'name': product['name'],
                 'price': product['price'],
                 'size': size,
-                'image': product['image']
+                'image': product['image'],
+                'quantity': 1
             }
             self.carts[user_id].append(cart_item)
 
@@ -32,16 +34,22 @@ class CartService:
     def process_order(self, user_id, address, payment):
         cart_items = self.get_cart_items(user_id)
 
-        # Проверяваме наличността и намаляваме количеството
         for item in cart_items:
-            if not self.catalog_service.reduce_quantity(item['product_id']):
+            product = self.catalog_service.get_product_by_id(item['product_id'])
+            if not product or product['quantity'] < item['quantity']:
                 return False
 
-        # Изчистваме кошницата
+        for item in cart_items:
+            if not self.catalog_service.reduce_quantity(item['product_id'], item['quantity']):
+                return False
+
         self.carts[user_id] = []
 
         print(f"Поръчка обработена за потребител {user_id}")
         print(f"Адрес: {address}")
         print(f"Плащане: {payment}")
+        print(f"Продукти:")
+        for item in cart_items:
+            print(f"  - {item['name']} ({item['size']}) x{item['quantity']}")
 
         return True
