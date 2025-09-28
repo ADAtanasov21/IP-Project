@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Поръчка - Shoe Store{% endblock %}
+
+{% block content %}
+<div class="checkout-container">
+    <h2>✅ Финализиране на поръчка</h2>
+    
+    <div class="checkout-content">
+        <div class="order-summary">
+            <h3>📋 Вашата поръчка:</h3>
+            {% for item in cart_items %}
+            <div class="checkout-item">
+                <span>{{ item.name }} ({{ item.color }}, размер {{ item.size }}) x {{ item.quantity }}</span>
+                <span>{{ "%.2f"|format(item.price * item.quantity) }} лв.</span>
+            </div>
+            {% endfor %}
+            <div class="checkout-total">
+                <strong>💰 Общо: {{ "%.2f"|format(total) }} лв.</strong>
+            </div>
+        </div>
+        
+        <form method="POST" class="checkout-form">
+            <div class="form-group">
+                <label for="address">📍 Адрес за доставка:</label>
+                <textarea id="address" name="address" required rows="3" placeholder="Въведете пълният адрес за доставка..."></textarea>
+            </div>
+            <div class="form-group">
+                <label for="payment_method">💳 Начин на плащане:</label>
+                <select id="payment_method" name="payment_method" required>
+                    <option value="">Избери начин на плащане</option>
+                    <option value="card">💳 Кредитна карта</option>
+                    <option value="paypal">💙 PayPal</option>
+                    <option value="cash">💵 Наложен платеж</option>
+                </select>
+            </div>
+            <div class="checkout-actions">
+                <a href="{{ url_for('cart.view_cart') }}" class="btn btn-secondary">⬅️ Назад към кошницата</a>
+                <button type="submit" class="btn btn-primary">🎯 Потвърди поръчката</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
