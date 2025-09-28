@@ -1,52 +1,28 @@
-from flask import session
+class AuthService:
+    def __init__(self):
+        self.users = [
+            {'id': 1, 'email': 'admin@shop.com', 'password': 'admin123', 'is_admin': True},
+            {'id': 2, 'email': 'user1@shop.com', 'password': 'user123', 'is_admin': False},
+            {'id': 3, 'email': 'user2@shop.com', 'password': 'user456', 'is_admin': False}
+        ]
+        self.next_id = 4
 
-users = []
-user_id_counter = 1
-
-
-def register_user(email, password, name):
-    global user_id_counter
-
-    for user in users:
-        if user['email'] == email:
+    def register_user(self, email, password):
+        if any(user['email'] == email for user in self.users):
             return False
 
-    user = {
-        'id': user_id_counter,
-        'email': email,
-        'password': password,  # In real app, hash this!
-        'name': name,
-        'is_admin': False
-    }
+        new_user = {
+            'id': self.next_id,
+            'email': email,
+            'password': password,
+            'is_admin': False
+        }
+        self.users.append(new_user)
+        self.next_id += 1
+        return True
 
-    users.append(user)
-    user_id_counter += 1
-
-    print(f"Email sent to {email}: Registration confirmed!")
-
-    return True
-
-
-def login_user(email, password):
-    for user in users:
-        if user['email'] == email and user['password'] == password:
-            return user
-    return None
-
-
-def logout_user():
-    session.clear()
-
-
-def create_admin_user():
-    admin = {
-        'id': 999,
-        'email': 'admin@shoestore.com',
-        'password': 'admin123',
-        'name': 'Administrator',
-        'is_admin': True
-    }
-
-    if not any(user['email'] == admin['email'] for user in users):
-        users.append(admin)
-        print("Admin user created: admin@shoestore.com / admin123")
+    def login_user(self, email, password):
+        for user in self.users:
+            if user['email'] == email and user['password'] == password:
+                return user
+        return None

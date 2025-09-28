@@ -1,48 +1,47 @@
-from services.catalog_service import get_product_by_id
-
-carts = {}
+from services.catalog_service import CatalogService
 
 
-def add_to_cart(user_id, product_id, size, quantity=1):
-    product = get_product_by_id(product_id)
-    if not product or product['stock'] < quantity or size not in product['sizes']:
-        return False
+class CartService:
+    def __init__(self):
+        self.carts = {}  # user_id -> list of cart items
+        self.catalog_service = CatalogService()
 
-    if user_id not in carts:
-        carts[user_id] = []
+    def add_to_cart(self, user_id, product_id, size):
+        if user_id not in self.carts:
+            self.carts[user_id] = []
 
-    for item in carts[user_id]:
-        if item['product_id'] == product_id and item['size'] == size:
-            item['quantity'] += quantity
-            return True
+        # Проверяваме дали вече е добавен същия продукт със същия размер
+        for item in self.carts[user_id]:
+            if item['product_id'] == product_id and item['size'] == size:
+                return  # Не добавяме повторно
 
-    cart_item = {
-        'product_id': product_id,
-        'name': product['name'],
-        'color': product['color'],
-        'size': size,
-        'price': product['price'],
-        'quantity': quantity
-    }
+        product = self.catalog_service.get_product_by_id(product_id)
+        if product and product['quantity'] > 0:
+            cart_item = {
+                'product_id': product_id,
+                'name': product['name'],
+                'price': product['price'],
+                'size': size,
+                'image': product['image']
+            }
+            self.carts[user_id].append(cart_item)
 
-    carts[user_id].append(cart_item)
-    return True
+    def get_cart_items(self, user_id):
+        return self.carts.get(user_id, [])
 
+    def process_order(self, user_id, address, payment):
+        cart_items = self.get_cart_items(user_id)
 
-def get_cart(user_id):
-    return carts.get(user_id, [])
+        # Проверяваме наличността и намаляваме количеството
+        for item in cart_items:
+            if not self.catalog_service.reduce_quantity(item['product_id']):
+                return False
 
+        # Изчистваме кошницата
+        self.carts[user_id] = []
 
-def remove_from_cart(user_id, product_id):
-    if user_id in carts:
-        carts[user_id] = [item for item in carts[user_id] if item['product_id'] != product_id]
+        print(f"Поръчка обработена за потребител {user_id}")
+        print(f"Адрес: {address}")
+        print(f"Плащане: {payment}")
 
-
-def clear_cart(user_id):
-    if user_id in carts:
-        carts[user_id] = []
-
-
-def get_cart_total(user_id):
-    cart_items = get_cart(user_id)
-    return sum(item['price'] * item['quantity'] for item in cart_items)
+        return True
