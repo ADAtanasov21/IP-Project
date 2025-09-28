@@ -3,19 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Shoe Store{% endblock %}</title>
+    <title>{% block title %}Обувки Онлайн{% endblock %}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
     <nav class="navbar">
         <div class="nav-container">
-            <a href="{{ url_for('index') }}" class="nav-brand">👟 Shoe Store</a>
+            <a href="{{ url_for('index') }}" class="nav-brand">🥿 Shoe Store</a>
             <div class="nav-links">
-                <a href="{{ url_for('catalog.catalog') }}">Каталог</a>
                 {% if session.user_id %}
-                    <a href="{{ url_for('cart.view_cart') }}">🛒 Кошница</a>
+                    <a href="{{ url_for('catalog.catalog') }}">Каталог</a>
+                    <a href="{{ url_for('cart.view_cart') }}">Кошница</a>
                     {% if session.is_admin %}
-                        <a href="{{ url_for('admin.admin_panel') }}">⚙️ Admin</a>
+                        <a href="{{ url_for('admin.admin_panel') }}">Админ</a>
                     {% endif %}
                     <a href="{{ url_for('auth.logout') }}">Изход ({{ session.user_email }})</a>
                 {% else %}
@@ -27,21 +27,15 @@
     </nav>
 
     <main class="main-content">
-        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% with messages = get_flashed_messages() %}
             {% if messages %}
-                <div class="flash-messages">
-                    {% for category, message in messages %}
-                        <div class="flash-message {{ category }}">{{ message }}</div>
-                    {% endfor %}
-                </div>
+                {% for message in messages %}
+                    <div class="flash-message">{{ message }}</div>
+                {% endfor %}
             {% endif %}
         {% endwith %}
 
         {% block content %}{% endblock %}
     </main>
-
-    <footer class="footer">
-        <p>&copy; 2024 Shoe Store. Всички права запазени.</p>
-    </footer>
 </body>
 </html>

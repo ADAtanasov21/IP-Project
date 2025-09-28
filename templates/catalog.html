@@ -1,80 +1,58 @@
 {% extends "base.html" %}
 
-{% block title %}Каталог - Shoe Store{% endblock %}
-
 {% block content %}
 <div class="catalog-header">
-    <h2>👟 Каталог с обувки</h2>
-    
-    <form method="GET" class="search-form">
-        <div class="search-row">
-            <input type="text" name="search" placeholder="Търси по име или цвят..." value="{{ request.args.get('search', '') }}">
-            <select name="color">
-                <option value="">Всички цветове</option>
-                <option value="Black" {% if request.args.get('color') == 'Black' %}selected{% endif %}>Черен</option>
-                <option value="White" {% if request.args.get('color') == 'White' %}selected{% endif %}>Бял</option>
-                <option value="Red" {% if request.args.get('color') == 'Red' %}selected{% endif %}>Червен</option>
-                <option value="Blue" {% if request.args.get('color') == 'Blue' %}selected{% endif %}>Син</option>
-                <option value="Green" {% if request.args.get('color') == 'Green' %}selected{% endif %}>Зелен</option>
-                <option value="Brown" {% if request.args.get('color') == 'Brown' %}selected{% endif %}>Кафяв</option>
-            </select>
+    <h1>Каталог обувки</h1>
+
+    <form class="filter-form" method="GET">
+        <div class="filter-row">
+            <input type="text" name="search" placeholder="Търсене..." value="{{ request.args.get('search', '') }}">
+            <input type="text" name="color" placeholder="Цвят" value="{{ request.args.get('color', '') }}">
+            <input type="number" name="min_price" placeholder="Мин. цена" step="0.01" value="{{ request.args.get('min_price', '') }}">
+            <input type="number" name="max_price" placeholder="Макс. цена" step="0.01" value="{{ request.args.get('max_price', '') }}">
             <select name="size">
                 <option value="">Всички размери</option>
-                {% for size in ['36', '37', '38', '39', '40', '41', '42', '43', '44', '45'] %}
-                <option value="{{ size }}" {% if request.args.get('size') == size %}selected{% endif %}>{{ size }}</option>
+                {% for size in ['37', '38', '39', '40', '41', '42', '43', '44'] %}
+                    <option value="{{ size }}" {{ 'selected' if request.args.get('size') == size }}>{{ size }}</option>
                 {% endfor %}
             </select>
-        </div>
-        <div class="search-row">
-            <input type="number" name="min_price" placeholder="Мин цена" step="0.01" value="{{ request.args.get('min_price', '') }}">
-            <input type="number" name="max_price" placeholder="Макс цена" step="0.01" value="{{ request.args.get('max_price', '') }}">
-            <button type="submit" class="btn btn-secondary">🔍 Търси</button>
-            <a href="{{ url_for('catalog.catalog') }}" class="btn btn-outline">❌ Изчисти</a>
+            <button type="submit" class="btn btn-secondary">Филтрирай</button>
+            <a href="{{ url_for('catalog.catalog') }}" class="btn btn-outline">Изчисти</a>
         </div>
     </form>
 </div>
 
 <div class="products-grid">
     {% for product in products %}
-    <div class="product-card">
-        <div class="product-info">
-            <h3>{{ product.name }}</h3>
-            <p class="product-description">{{ product.description }}</p>
-            <p class="product-color"><strong>Цвят:</strong> {{ product.color }}</p>
-            <p class="product-sizes"><strong>Размери:</strong> {{ product.sizes | join(', ') }}</p>
-            <p class="product-price">💰 {{ "%.2f"|format(product.price) }} лв.</p>
-            <p class="product-stock">📦 В наличност: {{ product.stock }}</p>
+        <div class="product-card">
+            <img src="{{ product.image }}" alt="{{ product.name }}" class="product-image">
+            <div class="product-info">
+                <h3>{{ product.name }}</h3>
+                <p class="product-color">Цвят: {{ product.color }}</p>
+                <p class="product-description">{{ product.description }}</p>
+                <p class="product-price">{{ "%.2f"|format(product.price) }} лв.</p>
+                <p class="product-sizes">Размери: {{ product.sizes|join(', ') }}</p>
+                <p class="product-quantity">Налични: {{ product.quantity }} бр.</p>
+
+                {% if product.quantity > 0 %}
+                    <form class="add-to-cart-form" action="{{ url_for('cart.add_to_cart', product_id=product.id) }}" method="GET">
+                        <select name="size" required>
+                            <option value="">Изберете размер</option>
+                            {% for size in product.sizes %}
+                                <option value="{{ size }}">{{ size }}</option>
+                            {% endfor %}
+                        </select>
+                        <button type="submit" class="btn btn-primary">Добави в кошница</button>
+                    </form>
+                {% else %}
+                    <p class="out-of-stock">Няма в наличност</p>
+                {% endif %}
+            </div>
         </div>
-        
-        {% if session.user_id %}
-        <div class="add-to-cart-form">
-            <select id="size-{{ product.id }}" required>
-                <option value="">Избери размер</option>
-                {% for size in product.sizes %}
-                <option value="{{ size }}">{{ size }}</option>
-                {% endfor %}
-            </select>
-            <button onclick="addToCart({{ product.id }}, document.getElementById('size-{{ product.id }}').value)" class="btn btn-primary">🛒 Добави в кошница</button>
-        </div>
-        {% else %}
-        <p><a href="{{ url_for('auth.login') }}" class="btn btn-outline">Влезте за да купувате</a></p>
-        {% endif %}
-    </div>
-    {% else %}
-    <div class="no-products">
-        <p>😔 Няма намерени продукти.</p>
-        <a href="{{ url_for('catalog.catalog') }}" class="btn btn-primary">Покажи всички продукти</a>
-    </div>
     {% endfor %}
 </div>
 
-<script>
-function addToCart(productId, size) {
-    if (!size) {
-        alert('Моля изберете размер');
-        return;
-    }
-    window.location.href = "{{ url_for('cart.add_to_cart_route', product_id=0) }}".replace('0', productId) + '?size=' + size;
-}
-</script>
+{% if not products %}
+    <p class="no-products">Няма намерени продукти.</p>
+{% endif %}
 {% endblock %}

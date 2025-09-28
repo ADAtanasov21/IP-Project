@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="form-container">
+    <h2>Добавяне на продукт</h2>
+    
+    <form method="POST">
+        <div class="form-group">
+            <label for="name">Име на продукта:</label>
+            <input type="text" id="name" name="name" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="description">Описание:</label>
+            <textarea id="description" name="description" required></textarea>
+        </div>
+        
+        <div class="form-group">
+            <label for="color">Цвят:</label>
+            <input type="text" id="color" name="color" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="sizes">Размери (разделени със запетая):</label>
+            <input type="text" id="sizes" name="sizes" placeholder="38,39,40,41,42" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="price">Цена:</label>
+            <input type="number" id="price" name="price" step="0.01" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="quantity">Количество:</label>
+            <input type="number" id="quantity" name="quantity" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="image">URL на снимка:</label>
+            <input type="url" id="image" name="image" placeholder="https://..." required>
+        </div>
+        
+        <button type="submit" class="btn btn-primary">Добави продукт</button>
+        <a href="{{ url_for('admin.admin_panel') }}" class="btn btn-secondary">Отказ</a>
+    </form>
+</div>
+{% endblock %}

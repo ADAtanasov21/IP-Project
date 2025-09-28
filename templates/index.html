@@ -1,26 +1,16 @@
 {% extends "base.html" %}
 
-{% block title %}Начало - Shoe Store{% endblock %}
-
 {% block content %}
 <div class="hero">
-    <h1>👟 Добре дошли в нашия магазин за обувки!</h1>
-    <p>Най-добрите обувки на най-добри цени</p>
-    <a href="{{ url_for('catalog.catalog') }}" class="btn btn-primary">Разгледай каталога</a>
-</div>
-
-<div class="features">
-    <div class="feature">
-        <h3>✨ Качествени обувки</h3>
-        <p>Предлагаме само най-качествените марки</p>
-    </div>
-    <div class="feature">
-        <h3>🚚 Бърза доставка</h3>
-        <p>Доставяме до 2 работни дни</p>
-    </div>
-    <div class="feature">
-        <h3>↩️ Лесно връщане</h3>
-        <p>14 дни право на връщане</p>
-    </div>
+    <h1>Добре дошли в нашия магазин за обувки!</h1>
+    <p>Открийте най-добрите обувки за всеки повод</p>
+    {% if not session.user_id %}
+        <div class="hero-buttons">
+            <a href="{{ url_for('auth.register') }}" class="btn btn-primary">Регистрация</a>
+            <a href="{{ url_for('auth.login') }}" class="btn btn-secondary">Вход</a>
+        </div>
+    {% else %}
+        <a href="{{ url_for('catalog.catalog') }}" class="btn btn-primary">Разгледайте каталога</a>
+    {% endif %}
 </div>
 {% endblock %}
