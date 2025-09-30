@@ -1,7 +1,21 @@
-class CatalogService:
+class BaseService:
+
     def __init__(self):
-        self.products = [
-            # Зимни обувки
+        self.data = []
+        self.next_id = 1
+
+    def get_all(self):
+        return self.data
+
+    def get_by_id(self, item_id):
+        return next((item for item in self.data if item['id'] == item_id), None)
+
+
+class CatalogService(BaseService):
+    def __init__(self):
+        super().__init__()
+        self.data = [
+
             {
                 'id': 1, 'name': 'Timberland Boots', 'description': 'Кожени работни обувки',
                 'color': 'Кафяв', 'sizes': ['40', '41', '42', '43', '44'], 'price': 220.00,
@@ -39,7 +53,6 @@ class CatalogService:
                 'image': 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSxK9xH3xK9xH3xK9xH3xK9xH3xK9xH3xK9xH&s'
             },
 
-            # Спортни обувки
             {
                 'id': 7, 'name': 'Nike Air Max 90', 'description': 'Класически спортни обувки',
                 'color': 'Бял', 'sizes': ['39', '40', '41', '42', '43'], 'price': 180.00,
@@ -77,7 +90,6 @@ class CatalogService:
                 'image': 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQxK9xH3xK9xH3xK9xH3xK9xH3xK9xH3xK9xH&s'
             },
 
-            # Официални обувки
             {
                 'id': 13, 'name': 'Clarks Desert Boot', 'description': 'Елегантни велурени обувки',
                 'color': 'Кафяв', 'sizes': ['40', '41', '42', '43', '44'], 'price': 180.00,
@@ -117,32 +129,35 @@ class CatalogService:
         ]
         self.next_id = 19
 
-    def get_products(self, category=None):
+    def get_all(self, category=None):
         if category:
-            return [p for p in self.products if p['category'] == category]
-        return self.products
+            return [p for p in self.data if p['category'] == category]
+        return super().get_all()
+
+    def get_products(self, category=None):
+        return self.get_all(category)
 
     def get_product_by_id(self, product_id):
-        return next((p for p in self.products if p['id'] == product_id), None)
+        return self.get_by_id(product_id)
 
     def add_product(self, product_data):
         product = {
             'id': self.next_id,
             **product_data
         }
-        self.products.append(product)
+        self.data.append(product)
         self.next_id += 1
 
     def update_product(self, product_id, product_data):
-        product = self.get_product_by_id(product_id)
+        product = self.get_by_id(product_id)
         if product:
             product.update(product_data)
 
     def delete_product(self, product_id):
-        self.products = [p for p in self.products if p['id'] != product_id]
+        self.data = [p for p in self.data if p['id'] != product_id]
 
     def reduce_quantity(self, product_id, amount=1):
-        product = self.get_product_by_id(product_id)
+        product = self.get_by_id(product_id)
         if product and product['quantity'] >= amount:
             product['quantity'] -= amount
             return True
