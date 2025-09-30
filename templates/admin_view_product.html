@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="form-container">
+    <h2>Преглед на продукт</h2>
+
+    <div class="product-details">
+        <div class="form-group">
+            <strong>ID:</strong> {{ product.id }}
+        </div>
+
+        <div class="form-group">
+            <strong>Име на продукта:</strong> {{ product.name }}
+        </div>
+
+        <div class="form-group">
+            <strong>Описание:</strong> {{ product.description }}
+        </div>
+
+        <div class="form-group">
+            <strong>Категория:</strong> 
+            {% if product.category == 'winter' %}Зимни обувки
+            {% elif product.category == 'sport' %}Спортни обувки
+            {% elif product.category == 'formal' %}Официални обувки
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <strong>Цвят:</strong> {{ product.color }}
+        </div>
+
+        <div class="form-group">
+            <strong>Размери:</strong> {{ product.sizes|join(', ') }}
+        </div>
+
+        <div class="form-group">
+            <strong>Цена:</strong> {{ "%.2f"|format(product.price) }} лв.
+        </div>
+
+        <div class="form-group">
+            <strong>Количество:</strong> {{ product.quantity }} бр.
+        </div>
+
+        <div class="form-group">
+            <strong>Снимка:</strong><br>
+            <img src="{{ product.image }}" alt="{{ product.name }}" style="max-width: 300px; margin-top: 10px;">
+        </div>
+
+        <div class="form-group">
+            <a href="{{ url_for('admin.edit_product', product_id=product.id) }}" class="btn btn-primary">Редактирай</a>
+            <a href="{{ url_for('admin.admin_panel') }}" class="btn btn-secondary">Назад</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

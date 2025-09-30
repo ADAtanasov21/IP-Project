@@ -16,6 +16,16 @@
         </div>
 
         <div class="form-group">
+            <label for="category">Категория:</label>
+            <select id="category" name="category" required>
+                <option value="">Изберете категория</option>
+                <option value="winter" {% if product.category == 'winter' %}selected{% endif %}>Зимни обувки</option>
+                <option value="sport" {% if product.category == 'sport' %}selected{% endif %}>Спортни обувки</option>
+                <option value="formal" {% if product.category == 'formal' %}selected{% endif %}>Официални обувки</option>
+            </select>
+        </div>
+
+        <div class="form-group">
             <label for="color">Цвят:</label>
             <input type="text" id="color" name="color" value="{{ product.color }}" required>
         </div>

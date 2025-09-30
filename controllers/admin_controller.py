@@ -69,6 +69,10 @@ def edit_product(product_id):
         return redirect(url_for('admin.admin_panel'))
 
     product = catalog_service.get_product_by_id(product_id)
+    if not product:
+        flash('Продуктът не е намерен!')
+        return redirect(url_for('admin.admin_panel'))
+
     return render_template('admin_edit_product.html', product=product)
 
 
@@ -78,6 +82,25 @@ def delete_product(product_id):
     if redirect_response:
         return redirect_response
 
-    catalog_service.delete_product(product_id)
-    flash('Продуктът е изтрит!')
+    product = catalog_service.get_product_by_id(product_id)
+    if product:
+        catalog_service.delete_product(product_id)
+        flash('Продуктът е изтрит!')
+    else:
+        flash('Продуктът не е намерен!')
+
     return redirect(url_for('admin.admin_panel'))
+
+
+@admin_bp.route('/view_product/<int:product_id>')
+def view_product(product_id):
+    redirect_response = admin_required()
+    if redirect_response:
+        return redirect_response
+
+    product = catalog_service.get_product_by_id(product_id)
+    if not product:
+        flash('Продуктът не е намерен!')
+        return redirect(url_for('admin.admin_panel'))
+
+    return render_template('admin_view_product.html', product=product)
