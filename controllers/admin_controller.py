@@ -31,6 +31,7 @@ def add_product():
         product_data = {
             'name': request.form['name'],
             'description': request.form['description'],
+            'category': request.form['category'],
             'color': request.form['color'],
             'sizes': request.form['sizes'].split(','),
             'price': float(request.form['price']),
@@ -55,6 +56,7 @@ def edit_product(product_id):
         product_data = {
             'name': request.form['name'],
             'description': request.form['description'],
+            'category': request.form['category'],
             'color': request.form['color'],
             'sizes': request.form['sizes'].split(','),
             'price': float(request.form['price']),

@@ -12,8 +12,12 @@ def catalog():
     min_price = request.args.get('min_price', type=float)
     max_price = request.args.get('max_price', type=float)
     size = request.args.get('size', '')
+    category = request.args.get('category', '')
 
     products = catalog_service.get_products()
+
+    if category:
+        products = [p for p in products if p['category'] == category]
 
     if search:
         products = [p for p in products if search.lower() in p['name'].lower() or search.lower() in p['color'].lower()]
@@ -30,4 +34,13 @@ def catalog():
     if size:
         products = [p for p in products if size in p['sizes']]
 
-    return render_template('catalog.html', products=products)
+    # Групиране на продуктите по категории
+    winter_products = [p for p in products if p['category'] == 'winter']
+    sport_products = [p for p in products if p['category'] == 'sport']
+    formal_products = [p for p in products if p['category'] == 'formal']
+
+    return render_template('catalog.html',
+                         winter_products=winter_products,
+                         sport_products=sport_products,
+                         formal_products=formal_products,
+                         products=products)

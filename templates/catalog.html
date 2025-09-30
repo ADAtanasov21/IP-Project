@@ -16,41 +16,122 @@
                     <option value="{{ size }}" {{ 'selected' if request.args.get('size') == size }}>{{ size }}</option>
                 {% endfor %}
             </select>
+            <select name="category">
+                <option value="">Всички категории</option>
+                <option value="winter" {{ 'selected' if request.args.get('category') == 'winter' }}>Зимни обувки</option>
+                <option value="sport" {{ 'selected' if request.args.get('category') == 'sport' }}>Спортни обувки</option>
+                <option value="formal" {{ 'selected' if request.args.get('category') == 'formal' }}>Официални обувки</option>
+            </select>
             <button type="submit" class="btn btn-secondary">Филтрирай</button>
             <a href="{{ url_for('catalog.catalog') }}" class="btn btn-outline">Изчисти</a>
         </div>
     </form>
 </div>
 
-<div class="products-grid">
-    {% for product in products %}
-        <div class="product-card">
-            <img src="{{ product.image }}" alt="{{ product.name }}" class="product-image">
-            <div class="product-info">
-                <h3>{{ product.name }}</h3>
-                <p class="product-color">Цвят: {{ product.color }}</p>
-                <p class="product-description">{{ product.description }}</p>
-                <p class="product-price">{{ "%.2f"|format(product.price) }} лв.</p>
-                <p class="product-sizes">Размери: {{ product.sizes|join(', ') }}</p>
-                <p class="product-quantity">Налични: {{ product.quantity }} бр.</p>
+{% if winter_products %}
+<div class="category-section">
+    <h2>❄️ Зимни обувки</h2>
+    <div class="products-grid">
+        {% for product in winter_products %}
+            <div class="product-card">
+                <img src="{{ product.image }}" alt="{{ product.name }}" class="product-image">
+                <div class="product-info">
+                    <h3>{{ product.name }}</h3>
+                    <p class="product-color">Цвят: {{ product.color }}</p>
+                    <p class="product-description">{{ product.description }}</p>
+                    <p class="product-price">{{ "%.2f"|format(product.price) }} лв.</p>
+                    <p class="product-sizes">Размери: {{ product.sizes|join(', ') }}</p>
+                    <p class="product-quantity">Налични: {{ product.quantity }} бр.</p>
 
-                {% if product.quantity > 0 %}
-                    <form class="add-to-cart-form" action="{{ url_for('cart.add_to_cart', product_id=product.id) }}" method="GET">
-                        <select name="size" required>
-                            <option value="">Изберете размер</option>
-                            {% for size in product.sizes %}
-                                <option value="{{ size }}">{{ size }}</option>
-                            {% endfor %}
-                        </select>
-                        <button type="submit" class="btn btn-primary">Добави в кошница</button>
-                    </form>
-                {% else %}
-                    <p class="out-of-stock">Няма в наличност</p>
-                {% endif %}
+                    {% if product.quantity > 0 %}
+                        <form class="add-to-cart-form" action="{{ url_for('cart.add_to_cart', product_id=product.id) }}" method="GET">
+                            <select name="size" required>
+                                <option value="">Изберете размер</option>
+                                {% for size in product.sizes %}
+                                    <option value="{{ size }}">{{ size }}</option>
+                                {% endfor %}
+                            </select>
+                            <button type="submit" class="btn btn-primary">Добави в кошница</button>
+                        </form>
+                    {% else %}
+                        <p class="out-of-stock">Няма в наличност</p>
+                    {% endif %}
+                </div>
             </div>
-        </div>
-    {% endfor %}
+        {% endfor %}
+    </div>
 </div>
+{% endif %}
+
+{% if sport_products %}
+<div class="category-section">
+    <h2>⚽ Спортни обувки</h2>
+    <div class="products-grid">
+        {% for product in sport_products %}
+            <div class="product-card">
+                <img src="{{ product.image }}" alt="{{ product.name }}" class="product-image">
+                <div class="product-info">
+                    <h3>{{ product.name }}</h3>
+                    <p class="product-color">Цвят: {{ product.color }}</p>
+                    <p class="product-description">{{ product.description }}</p>
+                    <p class="product-price">{{ "%.2f"|format(product.price) }} лв.</p>
+                    <p class="product-sizes">Размери: {{ product.sizes|join(', ') }}</p>
+                    <p class="product-quantity">Налични: {{ product.quantity }} бр.</p>
+
+                    {% if product.quantity > 0 %}
+                        <form class="add-to-cart-form" action="{{ url_for('cart.add_to_cart', product_id=product.id) }}" method="GET">
+                            <select name="size" required>
+                                <option value="">Изберете размер</option>
+                                {% for size in product.sizes %}
+                                    <option value="{{ size }}">{{ size }}</option>
+                                {% endfor %}
+                            </select>
+                            <button type="submit" class="btn btn-primary">Добави в кошница</button>
+                        </form>
+                    {% else %}
+                        <p class="out-of-stock">Няма в наличност</p>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+{% if formal_products %}
+<div class="category-section">
+    <h2>👔 Официални обувки</h2>
+    <div class="products-grid">
+        {% for product in formal_products %}
+            <div class="product-card">
+                <img src="{{ product.image }}" alt="{{ product.name }}" class="product-image">
+                <div class="product-info">
+                    <h3>{{ product.name }}</h3>
+                    <p class="product-color">Цвят: {{ product.color }}</p>
+                    <p class="product-description">{{ product.description }}</p>
+                    <p class="product-price">{{ "%.2f"|format(product.price) }} лв.</p>
+                    <p class="product-sizes">Размери: {{ product.sizes|join(', ') }}</p>
+                    <p class="product-quantity">Налични: {{ product.quantity }} бр.</p>
+
+                    {% if product.quantity > 0 %}
+                        <form class="add-to-cart-form" action="{{ url_for('cart.add_to_cart', product_id=product.id) }}" method="GET">
+                            <select name="size" required>
+                                <option value="">Изберете размер</option>
+                                {% for size in product.sizes %}
+                                    <option value="{{ size }}">{{ size }}</option>
+                                {% endfor %}
+                            </select>
+                            <button type="submit" class="btn btn-primary">Добави в кошница</button>
+                        </form>
+                    {% else %}
+                        <p class="out-of-stock">Няма в наличност</p>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
 
 {% if not products %}
     <p class="no-products">Няма намерени продукти.</p>
